@@ -15,7 +15,145 @@ public class LAB2 {
 	// TODO: document this method
 	public static float heapAdd(float[] a) {
 		// TODO: implement this method
+
+		a=heapSort(a);
+
+		while (a.length != 1)
+		{
+			a = extract(a);
+			a = heapSort(a);
+		}
+
 		return a[0];
+	}
+
+	public static float[] heapSort(float[] a) {
+
+		for (int i = (a.length / 2) - 1; i >=0 ; i--)
+		{
+			a = pushDown(a, i);
+		}
+		return a;
+	}
+
+	public static float[] pullUp(float[] a,int i){
+
+		//never used. didnt finish implementing
+		int parent = (i - 1) /2;
+		float temp;
+
+		try {
+			if (a[i] < a[parent])
+			{
+				temp = a[i];
+				a[i] = a[parent];
+				a[parent] = temp;
+				parent = (i - 1) /2;
+				pullUp(a, parent);
+
+			}
+
+		} catch (Exception ex)
+		{
+
+			return a;
+		}
+
+		return a;
+	}
+
+	public static float[] pushDown(float[] arr, int i) {
+
+		float min = arr[i];
+		float temp = 0;
+		int num;
+
+		try {
+			if ((2 * i) + 1 > arr.length)
+				min = arr[i];
+			else if ((2 * i) + 2 > arr.length - 1)
+				min = Math.min(arr[i], arr[(2 * i) + 1]);
+			else if ((2 * i) + 2 <= arr.length - 1)
+				min = Math.min(arr[i], Math.min(arr[(2 * i) + 1], arr[(2 * i) + 2]));
+			//
+			if (min == arr[i])
+				num = i;
+			else if (min == arr[(2*i) + 1])
+				num = (2*i) + 1;
+			else if (min == arr[(2*i) + 2])
+				num = (2*i) + 2;
+			else
+				num = i;
+
+			if (min != arr[i])
+			{
+				temp = arr[i];
+				arr[i] = min;
+				arr[num] = temp;
+				pushDown(arr, num);
+			}
+
+		} catch (ArrayIndexOutOfBoundsException ex)
+		{}
+
+		return arr;
+	}
+
+	//extract method
+	public static float[] extract(float[] a)
+	{
+		int num;
+		float[] arr = new float[a.length-1];
+		float total = 0;
+
+		if (a.length == 2)
+		{
+			total = a[0] + a[1];
+			for (int i = 0; i <arr.length; i++)
+			{
+				arr[i] = total;
+			}
+			return arr;
+		}
+
+
+		if (a[0] - a[1] < a[0] - a[2])
+		{
+			total = a[0] + a[2];
+			num = 1;
+			a[0] = a[num];
+			for (int i = 1; i <a.length - 2; i++)
+			{
+				a[i] = a[i +2];
+			}
+			a[a.length-2] = total;
+		}
+		else if (a[0] - a[1] > a[0] - a[2])
+		{
+			total = a[0] + a[1];
+			num = 2;
+			for (int i = 0; i < a.length - 2; i++)
+			{
+			a[i] = a[i + num];
+			}
+			a[a.length-2] = total;
+
+		}
+		else {
+			total = a[0] + a[1];
+			num = 2;
+			for (int i = 0; i < a.length - 2; i++) {
+				a[i] = a[i + num];
+			}
+			a[a.length - 2] = total;
+		}
+
+		for (int i = 0; i <arr.length; i++)
+		{
+			arr[i] = a[i];
+		}
+
+		return arr;
 	}
 
 	/********************************************
