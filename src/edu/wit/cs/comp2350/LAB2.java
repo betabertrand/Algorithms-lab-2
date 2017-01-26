@@ -1,11 +1,14 @@
 package edu.wit.cs.comp2350;
 
+import edu.wit.cs.comp2350.tests.LAB2TestCase;
+
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.ArrayList;
 
+
 /**
- * 
+ *
  * @author kreimendahl
  */
 
@@ -16,15 +19,67 @@ public class LAB2 {
 	public static float heapAdd(float[] a) {
 		// TODO: implement this method
 
-		a=heapSort(a);
 
-		while (a.length != 1)
+
+		a=heapSort(a);
+		float total;
+
+		for (int i = 0; i <a.length; i++)
+			System.out.print(a[i] + " ");
+
+		while (a.length > 1 )
 		{
-			a = extract(a);
-			a = heapSort(a);
+
+			total = extract(a);
+			a = insert(a, total);
+			for (int i = a.length-1; i >= 0; i--)
+				pullUp(a, a.length -1);
+			//System.out.println();
+			//for (int j = 0; j <a.length; j++)
+			//	System.out.print(a[j] + " ");
 		}
 
+
 		return a[0];
+
+
+	}
+	public static float[] insert(float[] a, float inserted)
+	{
+
+
+			float[] arr = new float[a.length - 1];
+
+
+
+			if (a.length == 2) {
+				arr[0] = inserted;
+				return arr;
+			}
+			else if (a[0] - a[1] < a[0] - a[2]) {
+
+				a[0] = a[1];
+				for (int i = 1; i < a.length - 2; i++) {
+					a[i] = a[i + 2];
+				}
+				a[a.length - 2] = inserted;
+			} else if (a[0] - a[1] > a[0] - a[2]) {
+				for (int i = 0; i < a.length - 2; i++) {
+					a[i] = a[i + 2];
+				}
+				a[a.length - 2] = inserted;
+			} else {
+				for (int i = 0; i < a.length - 2; i++) {
+					a[i] = a[i + 2];
+				}
+				a[a.length - 2] = inserted;
+			}
+
+			for (int i = 0; i < arr.length; i++) {
+				arr[i] = a[i];
+			}
+			return arr;
+
 	}
 
 	public static float[] heapSort(float[] a) {
@@ -38,25 +93,23 @@ public class LAB2 {
 
 	public static float[] pullUp(float[] a,int i){
 
-		//never used. didnt finish implementing
 		int parent = (i - 1) /2;
 		float temp;
 
 		try {
-			if (a[i] < a[parent])
-			{
-				temp = a[i];
-				a[i] = a[parent];
-				a[parent] = temp;
-				parent = (i - 1) /2;
-				pullUp(a, parent);
-
+			if (parent >= 0) {
+				if (a[i] < a[parent]) {
+					temp = a[i];
+					a[i] = a[parent];
+					a[parent] = temp;
+					pullUp(a, parent);
+				}
 			}
 
 		} catch (Exception ex)
 		{
 
-			return a;
+			//return a;
 		}
 
 		return a;
@@ -100,8 +153,28 @@ public class LAB2 {
 	}
 
 	//extract method
-	public static float[] extract(float[] a)
+	public static float extract(float[] a)
 	{
+		float total=0;
+		try {
+			if (a.length == 2){
+				total = a[0] + a[1];
+				return a[0] + a[1];}
+			else if (a[0] - a[1] < a[0] - a[2]){
+				total = a[0] + a[2];
+				return a[0] + a[2];}
+			else if (a[0] - a[1] > a[0] - a[2]) {
+				total = a[0] + a[1];
+				return a[0] + a[1]; }
+			else {
+				total = a[0] + a[1];
+				return a[0] + a[1]; }
+		} catch (ArrayIndexOutOfBoundsException ex)
+		{ return total;}
+
+		//return total;
+
+		/*
 		int num;
 		float[] arr = new float[a.length-1];
 		float total = 0;
@@ -152,23 +225,23 @@ public class LAB2 {
 		{
 			arr[i] = a[i];
 		}
+		*/
 
-		return arr;
 	}
 
 	/********************************************
-	 * 
+	 *
 	 * You shouldn't modify anything past here
-	 * 
+	 *
 	 ********************************************/
 
 	// sum an array of floats sequentially
 	public static float seqAdd(float[] a) {
 		float ret = 0;
-		
+
 		for (int i = 0; i < a.length; i++)
 			ret += a[i];
-		
+
 		return ret;
 	}
 
@@ -183,19 +256,19 @@ public class LAB2 {
 	public static float min2ScanAdd(float[] a) {
 		int min1, min2;
 		float tmp;
-		
+
 		if (a.length == 0) return 0;
-		
+
 		for (int i = 0, end = a.length; i < a.length - 1; i++, end--) {
-			
+
 			if (a[0] < a[1]) { min1 = 0; min2 = 1; }	// initialize
 			else { min1 = 1; min2 = 0; }
-			
+
 			for (int j = 2; j < end; j++) {		// find two min indices
 				if (a[min1] > a[j]) { min2 = min1; min1 = j; }
 				else if (a[min2] > a[j]) { min2 = j; }
 			}
-			
+
 			tmp = a[min1] + a[min2];	// add together
 			if (min1<min2) {			// put into first slot of array
 				a[min1] = tmp;			// fill second slot from end of array
@@ -206,7 +279,7 @@ public class LAB2 {
 				a[min1] = a[end-1];
 			}
 		}
-		
+
 		return a[0];
 	}
 
@@ -235,6 +308,17 @@ public class LAB2 {
 	public static void main(String[] args) {
 		Scanner s = new Scanner(System.in);
 
+		/*
+		LAB2TestCase tc = new LAB2TestCase();
+
+		//tc.testRandInts();
+
+		//tc.testRandFloats();
+
+		tc.testRandInts();
+		*/
+
+
 		System.out.printf("Enter the adding algorithm to use ([h]eap, [m]in2scan, se[q], [s]ort): ");
 		char algo = s.next().charAt(0);
 
@@ -251,9 +335,9 @@ public class LAB2 {
 		else if (values.length == 1) {
 			System.out.println("Sum is " + values[0]);
 			System.exit(0);
-			
+
 		}
-		
+
 		switch (algo) {
 		case 'h':
 			sum = heapAdd(values);
@@ -273,7 +357,9 @@ public class LAB2 {
 			break;
 		}
 
-		System.out.printf("Sum is %f\n", sum);		
+		System.out.printf("Sum is %f\n", sum);
+
+
 
 	}
 
